@@ -1,3 +1,5 @@
+import { Shield, Award, MapPin } from "lucide-react";
+
 export function Hero() {
   return (
     <div className="bg-gradient-to-br from-navy via-navy to-teal text-white py-12 md:py-16 px-4 relative overflow-hidden">
@@ -23,6 +25,20 @@ export function Hero() {
           <Stat value="3" label="Parcours" />
           <Stat value="24" label="Modules" />
           <Stat value="114,5 h" label="de formation" />
+        </div>
+
+        <div className="mt-8 flex flex-wrap justify-center items-center gap-4 md:gap-6 text-white/60 text-xs font-medium">
+          <span className="flex items-center gap-1.5">
+            <Shield className="w-4 h-4" /> Certifié Qualiopi
+          </span>
+          <span className="hidden md:inline text-white/20">|</span>
+          <span className="flex items-center gap-1.5">
+            <Award className="w-4 h-4" /> Certifications RS6776 · RS6372
+          </span>
+          <span className="hidden md:inline text-white/20">|</span>
+          <span className="flex items-center gap-1.5">
+            <MapPin className="w-4 h-4" /> Martinique · Guadeloupe · Guyane
+          </span>
         </div>
       </div>
     </div>

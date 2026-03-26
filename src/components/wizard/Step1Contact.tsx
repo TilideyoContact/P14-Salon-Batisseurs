@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useWizard, type SituationType } from "@/store/use-wizard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +14,15 @@ const SITUATIONS: { value: SituationType; label: string }[] = [
 
 export function Step1Contact() {
   const { contact, updateContact, setStep } = useWizard();
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const isValid = contact.prenom.trim().length >= 2 && contact.tel.trim().length >= 6;
+  const isValid =
+    contact.prenom.trim().length >= 2 &&
+    contact.nom.trim().length >= 2 &&
+    /^[+]?[\d\s\-().]{6,18}$/.test(contact.tel.trim()) && contact.tel.replace(/[^\d]/g, '').length >= 6 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact.email) &&
+    contact.rgpdConsent === true &&
+    contact.situation !== null;
 
   return (
     <motion.div 
@@ -33,21 +41,56 @@ export function Step1Contact() {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-bold text-navy mb-1.5">Votre prénom</label>
-            <Input 
-              placeholder="Ex: Jean-Marc" 
+            <Input
+              placeholder="Ex: Jean-Marc"
               value={contact.prenom}
               onChange={(e) => updateContact({ prenom: e.target.value })}
+              onBlur={() => setTouched(t => ({ ...t, prenom: true }))}
             />
+            {touched.prenom && contact.prenom.trim().length < 2 && (
+              <p className="text-xs text-red-500 mt-1">Minimum 2 caractères</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-navy mb-1.5">Votre nom</label>
+            <Input
+              placeholder="Ex: Dupont"
+              value={contact.nom}
+              onChange={(e) => updateContact({ nom: e.target.value })}
+              onBlur={() => setTouched(t => ({ ...t, nom: true }))}
+            />
+            {touched.nom && contact.nom.trim().length < 2 && (
+              <p className="text-xs text-red-500 mt-1">Minimum 2 caractères</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-bold text-navy mb-1.5">Votre téléphone</label>
-            <Input 
+            <Input
               type="tel"
-              placeholder="0696 XX XX XX" 
+              placeholder="0696 XX XX XX / +33 6 XX..."
               value={contact.tel}
               onChange={(e) => updateContact({ tel: e.target.value })}
+              onBlur={() => setTouched(t => ({ ...t, tel: true }))}
             />
+            {touched.tel && !(/^[+]?[\d\s\-().]{6,18}$/.test(contact.tel.trim()) && contact.tel.replace(/[^\d]/g, '').length >= 6) && (
+              <p className="text-xs text-red-500 mt-1">Numéro invalide</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-navy mb-1.5">Votre email</label>
+            <Input
+              type="email"
+              placeholder="votre@email.com"
+              value={contact.email}
+              onChange={(e) => updateContact({ email: e.target.value })}
+              onBlur={() => setTouched(t => ({ ...t, email: true }))}
+            />
+            {touched.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact.email) && (
+              <p className="text-xs text-red-500 mt-1">Email invalide</p>
+            )}
           </div>
 
           <div className="pt-2">
@@ -127,10 +170,25 @@ export function Step1Contact() {
           </div>
         </div>
 
+        <div className="pt-2">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={contact.rgpdConsent}
+              onChange={(e) => updateContact({ rgpdConsent: e.target.checked })}
+              className="mt-1 h-4 w-4 rounded border-border text-navy focus:ring-navy/20 cursor-pointer"
+            />
+            <span className="text-xs text-muted-foreground leading-relaxed">
+              J'accepte que mes données soient utilisées pour recevoir ma proposition commerciale. Consultez notre{' '}
+              <a href="/confidentialite" className="underline hover:text-navy">politique de confidentialité</a>.
+            </span>
+          </label>
+        </div>
+
         <div className="pt-4">
-          <Button 
-            size="lg" 
-            className="w-full text-base group" 
+          <Button
+            size="lg"
+            className="w-full text-base group"
             disabled={!isValid}
             onClick={() => setStep(2)}
           >
@@ -139,6 +197,9 @@ export function Step1Contact() {
           </Button>
           <p className="text-center text-xs text-muted-foreground mt-4">
             Aucun engagement. Données utilisées uniquement pour votre devis.
+          </p>
+          <p className="text-center text-xs text-muted-foreground mt-2">
+            Organisme certifié Qualiopi · NDA 97970203497
           </p>
         </div>
       </div>

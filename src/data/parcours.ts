@@ -12,6 +12,7 @@ export interface Module {
 export interface Track {
   id: string;
   label: string;
+  desc: string;
   color: string;
   dur: string;
   price: number;
@@ -22,6 +23,7 @@ export const PARCOURS: Record<string, Track> = {
   regbim: {
     id: "regbim",
     label: "Réglementation & BIM",
+    desc: "Maîtrisez la réglementation BTP Antilles-Guyane et le BIM : parasismique, accessibilité, incendie, urbanisme.",
     color: "#1A3A7A",
     dur: "30,5h · 3,5 jours",
     price: 1450,
@@ -39,6 +41,7 @@ export const PARCOURS: Record<string, Track> = {
   visu3d: {
     id: "visu3d",
     label: "Visualisation 3D",
+    desc: "Du croquis au rendu photoréaliste : modélisation 3D, textures PBR, vidéo 4K, visite virtuelle VR.",
     color: "#0a7d8f",
     dur: "42h · 7 jours",
     price: 2800,
@@ -60,6 +63,7 @@ export const PARCOURS: Record<string, Track> = {
   ia: {
     id: "ia",
     label: "IA & Architecture",
+    desc: "Intégrez l'IA générative dans votre pratique architecturale : prompting, moodboards, Forma, workflows.",
     color: "#7B2D8E",
     dur: "42h · 7 jours",
     price: 2800,

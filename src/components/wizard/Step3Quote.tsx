@@ -1,5 +1,6 @@
 import { useWizard, type CartItem } from "@/store/use-wizard";
 import { PARCOURS } from "@/data/parcours";
+import { computeTotals } from "@/lib/submit-order";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils";
@@ -9,66 +10,13 @@ import { motion } from "framer-motion";
 import { Search, Building2, Check, Trash2 } from "lucide-react";
 
 export function Step3Quote() {
-  const { cart, quote, updateQuote, submitOrder, setStep, updateModuleQty, addFullTrack } = useWizard();
+  const { cart, quote, updateQuote, submitOrder, setStep, updateModuleQty, addFullTrack, isSubmitting, submitError } = useWizard();
   const [searchQuery, setSearchQuery] = useState(quote.entreprise || "");
   const [showResults, setShowResults] = useState(false);
   const { results, isLoading } = useCompanySearch(searchQuery);
 
   const cartItems = Object.values(cart);
-  
-  // Calculations
-  let rawTotal = 0;
-  let finalTotal = 0;
-  const discounts: { label: string; amount: number }[] = [];
-
-  // Group individual items by track to calculate volume discount
-  const indItemsByTrack: Record<string, { qty: number, total: number }> = {};
-
-  cartItems.forEach(item => {
-    if (item.isFullTrack) {
-      const track = PARCOURS[item.trackId];
-      const mt = track.modules.reduce((s, m) => s + m.price, 0); // Raw module sum
-      const sp = Math.round(track.price * 0.95); // Special bundle price
-      
-      const itemRaw = mt * item.qty;
-      const itemFinal = sp * item.qty;
-      
-      rawTotal += itemRaw;
-      finalTotal += itemFinal;
-      
-      if (itemRaw > itemFinal) {
-        discounts.push({
-          label: `Remise Parcours Complet (${track.label})`,
-          amount: itemRaw - itemFinal
-        });
-      }
-    } else {
-      const track = PARCOURS[item.trackId];
-      const mod = track.modules.find(m => m.id === item.id);
-      if (mod) {
-        const itemRaw = mod.price * item.qty;
-        rawTotal += itemRaw;
-        
-        if (!indItemsByTrack[track.id]) indItemsByTrack[track.id] = { qty: 0, total: 0 };
-        indItemsByTrack[track.id].qty += item.qty;
-        indItemsByTrack[track.id].total += itemRaw;
-      }
-    }
-  });
-
-  // Apply volume discount to individual items (10% if 3+ items in same track)
-  Object.entries(indItemsByTrack).forEach(([trackId, data]) => {
-    if (data.qty >= 3) {
-      const discount = Math.round(data.total * 0.10);
-      finalTotal += (data.total - discount);
-      discounts.push({
-        label: `Remise Volume (3+ modules ${PARCOURS[trackId].label})`,
-        amount: discount
-      });
-    } else {
-      finalTotal += data.total;
-    }
-  });
+  const { rawTotal, finalTotal, discounts } = computeTotals(cart);
 
   const handleCompanySelect = (company: any) => {
     const nom = company.nom_complet;
@@ -89,7 +37,7 @@ export function Step3Quote() {
     setShowResults(true);
   };
 
-  const isFormValid = quote.nom.length >= 2 && /^\S+@\S+\.\S+$/.test(quote.email);
+  const isFormValid = cartItems.length > 0;
 
   return (
     <motion.div 
@@ -122,9 +70,9 @@ export function Step3Quote() {
                   </div>
                   <div className="flex items-center gap-6 justify-between md:justify-end w-full md:w-auto">
                     <div className="flex items-center bg-slate-100 rounded-lg border border-border">
-                      <button className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => addFullTrack(track.id, item.qty - 1)}>−</button>
+                      <button aria-label="Diminuer la quantité" className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => addFullTrack(track.id, item.qty - 1)}>−</button>
                       <div className="w-8 text-center font-bold text-sm">{item.qty}</div>
-                      <button className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => addFullTrack(track.id, item.qty + 1)}>+</button>
+                      <button aria-label="Augmenter la quantité" className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => addFullTrack(track.id, item.qty + 1)}>+</button>
                     </div>
                     <div className="text-right w-24">
                       <div className="font-bold text-navy text-lg">{formatPrice(Math.round(track.price * 0.95) * item.qty)}</div>
@@ -146,9 +94,9 @@ export function Step3Quote() {
                   </div>
                   <div className="flex items-center gap-6 justify-between md:justify-end w-full md:w-auto">
                     <div className="flex items-center bg-slate-100 rounded-lg border border-border">
-                      <button className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => updateModuleQty(track.id, mod.id, item.qty - 1)}>−</button>
+                      <button aria-label="Diminuer la quantité" className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => updateModuleQty(track.id, mod.id, item.qty - 1)}>−</button>
                       <div className="w-8 text-center font-bold text-sm">{item.qty}</div>
-                      <button className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => updateModuleQty(track.id, mod.id, item.qty + 1)}>+</button>
+                      <button aria-label="Augmenter la quantité" className="w-8 h-8 flex items-center justify-center hover:bg-slate-200" onClick={() => updateModuleQty(track.id, mod.id, item.qty + 1)}>+</button>
                     </div>
                     <div className="text-right w-24">
                       <div className="font-bold text-navy text-lg">{formatPrice(mod.price * item.qty)}</div>
@@ -205,28 +153,8 @@ export function Step3Quote() {
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-border shadow-lg shadow-black/5 relative z-10">
         <h3 className="font-bold text-navy text-lg mb-6 flex items-center gap-2">
           <Building2 className="w-5 h-5 text-turq" />
-          Coordonnées de facturation
+          Informations complémentaires
         </h3>
-        
-        <div className="grid md:grid-cols-2 gap-5 mb-5">
-          <div>
-            <label className="block text-sm font-bold text-navy mb-1.5">Nom *</label>
-            <Input 
-              placeholder="Votre nom de famille" 
-              value={quote.nom}
-              onChange={(e) => updateQuote({ nom: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-navy mb-1.5">Email *</label>
-            <Input 
-              type="email"
-              placeholder="votre@email.com" 
-              value={quote.email}
-              onChange={(e) => updateQuote({ email: e.target.value })}
-            />
-          </div>
-        </div>
 
         <div className="mb-5 relative">
           <label className="block text-sm font-bold text-navy mb-1.5">Entreprise / Agence</label>
@@ -280,22 +208,29 @@ export function Step3Quote() {
 
         <div>
           <label className="block text-sm font-bold text-navy mb-1.5">Commentaire (optionnel)</label>
-          <Input 
-            placeholder="Précisions, dates souhaitées, besoins OPCO..." 
+          <textarea
+            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="Précisions, dates souhaitées, besoins OPCO..."
+            rows={3}
             value={quote.comment}
             onChange={(e) => updateQuote({ comment: e.target.value })}
           />
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-border">
-          <Button variant="secondary" onClick={() => setStep(2)} className="w-full sm:w-auto">← Modifier sélection</Button>
-          <Button 
-            size="lg" 
-            className="w-full sm:flex-1 text-base" 
-            disabled={!isFormValid || cartItems.length === 0}
+          {submitError && (
+            <div className="w-full text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+              {submitError}
+            </div>
+          )}
+          <Button variant="secondary" onClick={() => setStep(2)} className="w-full sm:w-auto" disabled={isSubmitting}>← Modifier sélection</Button>
+          <Button
+            size="lg"
+            className="w-full sm:flex-1 text-base"
+            disabled={!isFormValid || isSubmitting}
             onClick={submitOrder}
           >
-            Recevoir ma proposition →
+            {isSubmitting ? 'Envoi en cours...' : 'Recevoir ma proposition →'}
           </Button>
         </div>
       </div>

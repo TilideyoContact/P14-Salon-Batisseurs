@@ -1,21 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useWizard } from "@/store/use-wizard";
 import { PARCOURS, type Track, type Module } from "@/data/parcours";
 import { Button } from "@/components/ui/button";
 import { formatPrice, cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, CheckSquare, Square, ShoppingCart, Zap } from "lucide-react";
+import { ChevronDown, CheckSquare, Square, ShoppingCart, Zap, BadgeEuro } from "lucide-react";
 
 export function Step2Modules() {
   const { contact, setStep, cart } = useWizard();
   const [filter, setFilter] = useState<string>("all");
+  const [openTrackId, setOpenTrackId] = useState<string | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const tracks = filter === "all" ? Object.values(PARCOURS) : [PARCOURS[filter]];
 
   // Calculate cart summary
   const cartItems = Object.values(cart);
   const totalItems = cartItems.reduce((acc, item) => acc + item.qty, 0);
-  
+
   let totalPrice = 0;
   cartItems.forEach(item => {
     if (item.isFullTrack) {
@@ -28,20 +30,47 @@ export function Step2Modules() {
     }
   });
 
+  const handleToggleTrack = (trackId: string) => {
+    setOpenTrackId(prev => prev === trackId ? null : trackId);
+  };
+
+  // Scroll panel into view when it opens
+  useEffect(() => {
+    if (openTrackId && panelRef.current) {
+      // Small delay to let the animation start before scrolling
+      const timer = setTimeout(() => {
+        panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [openTrackId]);
+
+  const openTrack = openTrackId ? PARCOURS[openTrackId] : null;
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="max-w-5xl mx-auto py-8 px-4 pb-32"
+      className="max-w-5xl mx-auto py-8 px-4 pb-40"
     >
-      <div className="bg-magenta/10 border border-magenta/20 rounded-2xl p-4 flex items-center gap-4 mb-8">
-        <div className="w-12 h-12 bg-magenta text-white rounded-full flex items-center justify-center shrink-0 shadow-lg">
-          <Zap className="w-6 h-6" />
-        </div>
-        <div>
-          <p className="text-sm md:text-base font-bold text-navy">
-            Jusqu'à <span className="text-magenta">-35% sur les parcours complets</span> — aujourd'hui uniquement.
-          </p>
-          <p className="text-xs text-muted-foreground mt-0.5">Offre exclusive Salon des Bâtisseurs</p>
+      <div className="bg-gradient-to-r from-magenta/10 to-turq/10 border border-magenta/20 rounded-2xl p-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-10 h-10 bg-magenta text-white rounded-full flex items-center justify-center shrink-0">
+              <Zap className="w-5 h-5" />
+            </div>
+            <p className="text-sm font-bold text-navy">
+              Jusqu'à <span className="text-magenta">-35%</span> sur les parcours complets — offre salon
+            </p>
+          </div>
+          <div className="hidden sm:block w-px h-8 bg-border" />
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-10 h-10 bg-turq text-white rounded-full flex items-center justify-center shrink-0">
+              <BadgeEuro className="w-5 h-5" />
+            </div>
+            <p className="text-sm font-bold text-navy">
+              Financement <span className="text-turq">CPF · OPCO · France Travail</span> — accompagnement inclus
+            </p>
+          </div>
         </div>
       </div>
 
@@ -60,7 +89,7 @@ export function Step2Modules() {
           const count = cartItems.filter(i => i.trackId === t.id && i.qty > 0).length;
           return (
             <TabButton key={t.id} active={filter === t.id} onClick={() => setFilter(t.id)}>
-              {t.label} 
+              {t.label}
               {count > 0 && <span className="ml-2 bg-magenta text-white text-[10px] px-2 py-0.5 rounded-full">{count}</span>}
             </TabButton>
           );
@@ -70,9 +99,31 @@ export function Step2Modules() {
       {/* Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tracks.map(track => (
-          <TrackCard key={track.id} track={track} forceOpen={filter !== "all"} />
+          <TrackCard
+            key={track.id}
+            track={track}
+            isOpen={openTrackId === track.id}
+            onToggle={() => handleToggleTrack(track.id)}
+          />
         ))}
       </div>
+
+      {/* Full-width Modules Panel below the grid */}
+      <AnimatePresence mode="wait">
+        {openTrack && (
+          <motion.div
+            key={openTrack.id}
+            ref={panelRef}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden mt-6"
+          >
+            <ModulesPanel track={openTrack} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="mt-12 flex justify-start">
         <Button variant="secondary" onClick={() => setStep(1)}>← Retour au contact</Button>
@@ -101,8 +152,8 @@ export function Step2Modules() {
                 {formatPrice(totalPrice)}
               </div>
             </div>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               disabled={totalItems === 0}
               onClick={() => setStep(3)}
               className="px-4 md:px-8"
@@ -122,8 +173,8 @@ function TabButton({ children, active, onClick }: { children: React.ReactNode, a
       onClick={onClick}
       className={cn(
         "px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border-2",
-        active 
-          ? "bg-navy border-navy text-white shadow-md" 
+        active
+          ? "bg-navy border-navy text-white shadow-md"
           : "bg-white border-border text-foreground hover:border-navy/30"
       )}
     >
@@ -132,9 +183,8 @@ function TabButton({ children, active, onClick }: { children: React.ReactNode, a
   );
 }
 
-function TrackCard({ track, forceOpen }: { track: Track, forceOpen: boolean }) {
-  const { cart, addFullTrack, toggleAllModules } = useWizard();
-  const [isOpen, setIsOpen] = useState(forceOpen);
+function TrackCard({ track, isOpen, onToggle }: { track: Track, isOpen: boolean, onToggle: () => void }) {
+  const { cart, addFullTrack } = useWizard();
 
   const fullId = `full_${track.id}`;
   const fullCartItem = cart[fullId];
@@ -154,11 +204,6 @@ function TrackCard({ track, forceOpen }: { track: Track, forceOpen: boolean }) {
   const displayPrice = isFullSelected ? sp * fullQty : (isAlaCarte ? indTotal : sp);
   const displayOld = isFullSelected ? mt * fullQty : mt;
 
-  useEffect(() => {
-    if (forceOpen) setIsOpen(true);
-  }, [forceOpen]);
-
-
   return (
     <div className={cn(
       "bg-white rounded-3xl overflow-hidden border-2 transition-all duration-300 shadow-lg flex flex-col h-full",
@@ -166,17 +211,18 @@ function TrackCard({ track, forceOpen }: { track: Track, forceOpen: boolean }) {
     )}>
       {/* Top Color Stripe */}
       <div className="h-3 w-full" style={{ backgroundColor: track.color }} />
-      
+
       <div className="p-6 flex-1 flex flex-col">
         {/* Header */}
         <div className="mb-4">
-          <div 
+          <div
             className="inline-block px-3 py-1 rounded-lg text-white text-xs font-bold uppercase tracking-wider mb-3"
             style={{ backgroundColor: track.color }}
           >
             {track.label}
           </div>
           <div className="text-sm text-muted-foreground font-semibold">{track.dur}</div>
+          <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{track.desc}</p>
         </div>
 
         {/* Pricing Area */}
@@ -206,19 +252,21 @@ function TrackCard({ track, forceOpen }: { track: Track, forceOpen: boolean }) {
             </>
           )}
 
-          {/* Stepper for Full Track (only show if not à la carte) */}
+          {/* Stepper for Full Track (only show if not a la carte) */}
           {!isAlaCarte && (
             <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
               <span className="text-sm font-semibold text-navy">Parcours complet</span>
               <div className="flex items-center bg-white border border-border rounded-xl overflow-hidden shadow-sm">
-                <button 
+                <button
+                  aria-label="Diminuer la quantité"
                   className="w-10 h-10 flex items-center justify-center text-lg hover:bg-slate-100 transition-colors"
                   onClick={() => addFullTrack(track.id, Math.max(0, fullQty - 1))}
                 >−</button>
                 <div className={cn("w-10 h-10 flex items-center justify-center font-bold text-lg", fullQty > 0 ? "bg-navy text-white" : "")}>
                   {fullQty}
                 </div>
-                <button 
+                <button
+                  aria-label="Augmenter la quantité"
                   className="w-10 h-10 flex items-center justify-center text-lg hover:bg-slate-100 transition-colors"
                   onClick={() => addFullTrack(track.id, fullQty + 1)}
                 >+</button>
@@ -227,10 +275,15 @@ function TrackCard({ track, forceOpen }: { track: Track, forceOpen: boolean }) {
           )}
         </div>
 
-        {/* Accordion Toggle */}
-        <button 
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between py-3 px-4 bg-white border border-border rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors mt-auto"
+        {/* Toggle Button */}
+        <button
+          onClick={onToggle}
+          className={cn(
+            "w-full flex items-center justify-between py-3 px-4 border rounded-xl font-semibold text-sm transition-colors mt-auto",
+            isOpen
+              ? "bg-slate-100 border-slate-300 text-navy"
+              : "bg-white border-border hover:bg-slate-50"
+          )}
         >
           <span className="flex items-center gap-2">
             {isAlaCarte ? <span className="text-turq">✏️ Modifier sélection</span> : "📋 Voir les modules"}
@@ -238,39 +291,57 @@ function TrackCard({ track, forceOpen }: { track: Track, forceOpen: boolean }) {
           <ChevronDown className={cn("w-5 h-5 transition-transform duration-300", isOpen && "rotate-180")} />
         </button>
       </div>
+    </div>
+  );
+}
 
-      {/* Accordion Content */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-t border-border bg-slate-50 overflow-hidden"
-          >
-            <div className="p-4 space-y-2">
-              {!isFullSelected && (
-                <div className="text-right pb-2 border-b border-border/50 mb-3">
-                  <button 
-                    onClick={() => toggleAllModules(track.id)}
-                    className="text-xs font-bold text-navy hover:text-turq uppercase tracking-wider flex items-center justify-end gap-1.5 ml-auto"
-                  >
-                    {track.modules.every(m => cart[m.id]?.qty > 0) ? (
-                      <><CheckSquare className="w-4 h-4"/> Tout décocher</>
-                    ) : (
-                      <><Square className="w-4 h-4"/> Tout cocher</>
-                    )}
-                  </button>
-                </div>
-              )}
+function ModulesPanel({ track }: { track: Track }) {
+  const { cart, toggleAllModules } = useWizard();
 
-              {track.modules.map((m) => (
-                <ModuleItem key={m.id} trackId={track.id} module={m} disabled={isFullSelected} />
-              ))}
+  const fullId = `full_${track.id}`;
+  const isFullSelected = !!cart[fullId];
+
+  return (
+    <div className="bg-white rounded-2xl border-2 border-border shadow-lg overflow-hidden">
+      {/* Colored top border */}
+      <div className="h-2 w-full" style={{ backgroundColor: track.color }} />
+
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <div
+              className="inline-block px-3 py-1 rounded-lg text-white text-xs font-bold uppercase tracking-wider"
+              style={{ backgroundColor: track.color }}
+            >
+              {track.label}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <h3 className="text-lg font-bold text-navy">
+              Modules du parcours ({track.modules.length})
+            </h3>
+          </div>
+
+          {!isFullSelected && (
+            <button
+              onClick={() => toggleAllModules(track.id)}
+              className="text-xs font-bold text-navy hover:text-turq uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+            >
+              {track.modules.every(m => cart[m.id]?.qty > 0) ? (
+                <><CheckSquare className="w-4 h-4"/> Tout décocher</>
+              ) : (
+                <><Square className="w-4 h-4"/> Tout cocher</>
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* Modules in 2-column grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {track.modules.map((m) => (
+            <ModuleItem key={m.id} trackId={track.id} module={m} disabled={isFullSelected} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -278,7 +349,7 @@ function TrackCard({ track, forceOpen }: { track: Track, forceOpen: boolean }) {
 function ModuleItem({ trackId, module, disabled }: { trackId: string, module: Module, disabled: boolean }) {
   const { cart, updateModuleQty } = useWizard();
   const [expanded, setExpanded] = useState(false);
-  
+
   const inCart = !!cart[module.id];
   const qty = inCart ? cart[module.id].qty : 0;
 
@@ -314,16 +385,16 @@ function ModuleItem({ trackId, module, disabled }: { trackId: string, module: Mo
 
       {inCart && !disabled && (
         <div className="mt-3 pt-3 border-t border-border flex items-center justify-between pl-8">
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
             className="text-xs text-turq font-semibold hover:underline"
           >
             {expanded ? "Cacher détails" : "Voir programme"}
           </button>
           <div className="flex items-center bg-slate-50 border border-border rounded-lg overflow-hidden h-8">
-            <button className="w-8 flex items-center justify-center hover:bg-slate-200" onClick={(e) => { e.stopPropagation(); updateModuleQty(trackId, module.id, qty - 1); }}>−</button>
+            <button aria-label="Diminuer la quantité" className="w-8 flex items-center justify-center hover:bg-slate-200" onClick={(e) => { e.stopPropagation(); updateModuleQty(trackId, module.id, qty - 1); }}>−</button>
             <div className="w-8 flex items-center justify-center font-bold text-xs bg-white">{qty}</div>
-            <button className="w-8 flex items-center justify-center hover:bg-slate-200" onClick={(e) => { e.stopPropagation(); updateModuleQty(trackId, module.id, qty + 1); }}>+</button>
+            <button aria-label="Augmenter la quantité" className="w-8 flex items-center justify-center hover:bg-slate-200" onClick={(e) => { e.stopPropagation(); updateModuleQty(trackId, module.id, qty + 1); }}>+</button>
           </div>
         </div>
       )}

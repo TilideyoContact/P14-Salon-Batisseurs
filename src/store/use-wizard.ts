@@ -1,15 +1,20 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { PARCOURS } from '@/data/parcours';
+import { submitOrderData } from '@/lib/submit-order';
 
 export type SituationType = 'dirigeant' | 'rh' | 'salarie' | 'independant' | 'autre' | null;
 
-interface ContactInfo {
+export interface ContactInfo {
   prenom: string;
+  nom: string;
   tel: string;
+  email: string;
   situation: SituationType;
   nbSalaries: number;
   nbSalariesRH: number;
   autreSituation: string;
+  rgpdConsent: boolean;
 }
 
 export interface CartItem {
@@ -19,9 +24,7 @@ export interface CartItem {
   trackId: string;
 }
 
-interface QuoteInfo {
-  nom: string;
-  email: string;
+export interface QuoteInfo {
   entreprise: string;
   entrepriseDetails: { nom: string; siret: string; adresse: string } | null;
   comment: string;
@@ -33,46 +36,51 @@ interface WizardState {
   cart: Record<string, CartItem>;
   quote: QuoteInfo;
   reference: string | null;
-  
+  isSubmitting: boolean;
+  submitError: string | null;
+
   // Actions
   setStep: (step: number) => void;
   updateContact: (data: Partial<ContactInfo>) => void;
-  
+
   // Cart Actions
   addFullTrack: (trackId: string, qty: number) => void;
   updateModuleQty: (trackId: string, moduleId: string, qty: number) => void;
   toggleAllModules: (trackId: string) => void;
   clearCart: () => void;
-  
+
   // Quote Actions
   updateQuote: (data: Partial<QuoteInfo>) => void;
-  submitOrder: () => void;
+  submitOrder: () => Promise<void>;
   resetAll: () => void;
 }
 
 const initialContact: ContactInfo = {
   prenom: '',
+  nom: '',
   tel: '',
+  email: '',
   situation: null,
   nbSalaries: 0,
   nbSalariesRH: 1,
   autreSituation: '',
+  rgpdConsent: false,
 };
 
 const initialQuote: QuoteInfo = {
-  nom: '',
-  email: '',
   entreprise: '',
   entrepriseDetails: null,
   comment: '',
 };
 
-export const useWizard = create<WizardState>((set, get) => ({
+export const useWizard = create<WizardState>()(persist((set, get) => ({
   step: 1,
   contact: initialContact,
   cart: {},
   quote: initialQuote,
   reference: null,
+  isSubmitting: false,
+  submitError: null,
 
   setStep: (step) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -141,10 +149,18 @@ export const useWizard = create<WizardState>((set, get) => ({
 
   updateQuote: (data) => set((state) => ({ quote: { ...state.quote, ...data } })),
 
-  submitOrder: () => {
-    const ref = `SDB-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    set({ reference: ref, step: 4 });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  submitOrder: async () => {
+    const { contact, cart, quote } = get();
+    set({ isSubmitting: true, submitError: null });
+
+    try {
+      const result = await submitOrderData({ contact, cart, quote });
+      set({ reference: result.reference, step: 4, isSubmitting: false });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Une erreur est survenue lors de l\'envoi.';
+      set({ submitError: message, isSubmitting: false });
+    }
   },
 
   resetAll: () => set({
@@ -152,6 +168,8 @@ export const useWizard = create<WizardState>((set, get) => ({
     contact: initialContact,
     cart: {},
     quote: initialQuote,
-    reference: null
+    reference: null,
+    isSubmitting: false,
+    submitError: null
   })
-}));
+}), { name: 'p14-wizard-store' }));

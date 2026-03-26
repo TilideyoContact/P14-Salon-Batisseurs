@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P14 Salon des Batisseurs — Design #6 Glass Clay</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --cream: #FAF7F2;
+    --glass: rgba(255,255,255,0.55);
+    --glass-border: rgba(255,255,255,0.8);
+    --clay: #D4A373;
+    --deep-brown: #3D2C2E;
+    --sage: #7C9070;
+    --terracotta: #C4634E;
+    --gold: #BFA265;
+    --glass-shadow: 0 8px 32px rgba(61,44,46,0.08);
+    --glass-shadow-lg: 0 12px 48px rgba(61,44,46,0.12);
+    --radius: 28px;
+    --radius-sm: 16px;
+    --radius-pill: 999px;
+  }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background-color: var(--cream);
+    color: var(--deep-brown);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Subtle linen/paper texture */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(212,163,115,0.015) 3px,
+        rgba(212,163,115,0.015) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(212,163,115,0.015) 3px,
+        rgba(212,163,115,0.015) 4px
+      );
+  }
+
+  /* Background blobs */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 15% 10%, rgba(212,163,115,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 800px at 85% 30%, rgba(124,144,112,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 700px 500px at 50% 60%, rgba(196,99,78,0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 700px at 20% 85%, rgba(191,162,101,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 500px at 80% 80%, rgba(212,163,115,0.10) 0%, transparent 70%);
+  }
+
+  /* ========== FIXED DESIGN BANNER ========== */
+  .design-banner {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10000;
+    background: linear-gradient(135deg, var(--clay), var(--terracotta));
+    color: #fff;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-align: center;
+    padding: 11px 20px;
+    text-transform: uppercase;
+  }
+
+  .design-banner span {
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    margin-left: 16px;
+    opacity: 0.75;
+  }
+
+  /* ========== LAYOUT ========== */
+  .page {
+    margin-top: 44px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-wrapper {
+    padding: 80px 40px;
+  }
+
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-divider {
+    max-width: 1100px;
+    margin: 0 auto;
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--clay), transparent);
+    opacity: 0.3;
+  }
+
+  .step-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--clay);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .step-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--clay);
+    opacity: 0.25;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 40px;
+    color: var(--deep-brown);
+  }
+
+  .section-title .highlight {
+    color: var(--terracotta);
+  }
+
+  /* ========== GLASS CARD ========== */
+  .glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-shadow);
+    padding: 36px;
+  }
+
+  .glass-card-sm {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--glass-shadow);
+    padding: 20px 24px;
+  }
+
+  /* ========== FORM ELEMENTS ========== */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(61,44,46,0.55);
+  }
+
+  .form-input {
+    background: rgba(255,255,255,0.80);
+    border: 1.5px solid rgba(212,163,115,0.25);
+    border-radius: 16px;
+    padding: 13px 18px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.92rem;
+    color: var(--deep-brown);
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(61,44,46,0.04);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-input:focus,
+  .form-input.active {
+    border-color: var(--clay);
+    box-shadow: inset 0 2px 4px rgba(61,44,46,0.04), 0 0 0 3px rgba(212,163,115,0.12);
+  }
+
+  .form-input::placeholder {
+    color: rgba(61,44,46,0.3);
+  }
+
+  /* Radio pills */
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .radio-option {
+    background: rgba(255,255,255,0.7);
+    border: 1.5px solid rgba(212,163,115,0.2);
+    border-radius: var(--radius-pill);
+    padding: 10px 22px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--deep-brown);
+    cursor: pointer;
+    box-shadow: 2px 2px 6px rgba(61,44,46,0.06), -1px -1px 4px rgba(255,255,255,0.8);
+    transition: all 0.2s;
+  }
+
+  .radio-option.selected {
+    background: rgba(124,144,112,0.12);
+    border-color: var(--sage);
+    color: var(--sage);
+    font-weight: 600;
+    box-shadow: inset 2px 2px 6px rgba(124,144,112,0.12), inset -1px -1px 3px rgba(255,255,255,0.5);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--clay), var(--terracotta));
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 14px 32px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(196,99,78,0.25);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(196,99,78,0.3);
+  }
+
+  .btn-primary.large {
+    padding: 18px 40px;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(212,163,115,0.3);
+    border-radius: var(--radius-pill);
+    padding: 14px 28px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--clay);
+    cursor: pointer;
+    box-shadow: 2px 2px 8px rgba(61,44,46,0.06), -1px -1px 4px rgba(255,255,255,0.6);
+    transition: all 0.2s;
+  }
+
+  /* Trust badges */
+  .trust-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+    margin-bottom: 36px;
+  }
+
+  .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: var(--radius-pill);
+    padding: 8px 18px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(61,44,46,0.7);
+  }
+
+  .trust-badge .icon {
+    color: var(--sage);
+    font-size: 1rem;
+  }
+
+  /* Stats */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .stat-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--clay);
+    border-radius: 3px 3px 0 0;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(61,44,46,0.5);
+  }
+
+  /* ========== SECTION 2: MODULES ========== */
+  .promo-banner {
+    background: linear-gradient(135deg, var(--clay), rgba(212,163,115,0.85));
+    color: #fff;
+    border-radius: var(--radius-sm);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 20px rgba(212,163,115,0.25);
+  }
+
+  .promo-banner .promo-tag {
+    background: rgba(255,255,255,0.25);
+    border-radius: var(--radius-pill);
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .tracks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .track-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .track-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-lg);
+  }
+
+  .track-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 24px; right: 24px;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .track-card:nth-child(1)::before { background: var(--clay); }
+  .track-card:nth-child(2)::before { background: var(--sage); }
+  .track-card:nth-child(3)::before { background: var(--gold); }
+
+  .track-card.active {
+    border-color: var(--sage);
+    background: rgba(124,144,112,0.06);
+    box-shadow: var(--glass-shadow-lg), inset 0 0 30px rgba(124,144,112,0.04);
+  }
+
+  .track-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    color: rgba(61,44,46,0.3);
+    margin-bottom: 8px;
+  }
+
+  .track-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(61,44,46,0.45);
+    margin-bottom: 10px;
+  }
+
+  .track-tag.popular {
+    color: var(--sage);
+  }
+
+  .track-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--deep-brown);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .track-desc {
+    font-size: 0.82rem;
+    color: rgba(61,44,46,0.6);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .track-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(61,44,46,0.45);
+    padding-top: 14px;
+    border-top: 1px solid rgba(212,163,115,0.15);
+  }
+
+  .track-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--terracotta);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* Modules panel */
+  .modules-panel {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-shadow);
+    padding: 32px;
+    margin-bottom: 28px;
+  }
+
+  .modules-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--deep-brown);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .modules-panel-title .count {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(61,44,46,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .module-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 14px;
+    transition: all 0.15s;
+  }
+
+  .module-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--deep-brown);
+  }
+
+  .module-duration {
+    font-size: 0.72rem;
+    color: rgba(61,44,46,0.4);
+    margin-top: 2px;
+  }
+
+  .module-toggle {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(212,163,115,0.3);
+    background: rgba(255,255,255,0.6);
+    color: var(--clay);
+    box-shadow: 1px 1px 4px rgba(61,44,46,0.06);
+  }
+
+  .module-toggle.added {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(124,144,112,0.3);
+  }
+
+  /* Cart footer */
+  .cart-bar {
+    background: rgba(250,247,242,0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--glass-shadow);
+  }
+
+  .cart-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .cart-count {
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--deep-brown);
+  }
+
+  .cart-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(212,163,115,0.3);
+  }
+
+  .cart-total {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--terracotta);
+  }
+
+  .cart-discount {
+    font-size: 0.72rem;
+    color: rgba(61,44,46,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ========== SECTION 3: DEVIS ========== */
+  .devis-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 32px;
+  }
+
+  .devis-table {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+  }
+
+  .devis-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(212,163,115,0.12);
+    align-items: center;
+    font-size: 0.88rem;
+  }
+
+  .devis-row:last-child {
+    border-bottom: none;
+  }
+
+  .devis-row.header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(61,44,46,0.35);
+    border-bottom: 1px solid rgba(212,163,115,0.2);
+    padding: 14px 24px;
+  }
+
+  .devis-row .module-name-cell {
+    font-weight: 600;
+    color: var(--deep-brown);
+  }
+
+  .devis-row .track-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(61,44,46,0.35);
+    margin-top: 2px;
+  }
+
+  .devis-row .price-cell {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    text-align: right;
+    white-space: nowrap;
+    color: var(--deep-brown);
+  }
+
+  .devis-row .remove-cell {
+    opacity: 0.25;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    width: 24px;
+    color: var(--terracotta);
+  }
+
+  .devis-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-shadow);
+    margin-top: 16px;
+  }
+
+  .devis-total-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--deep-brown);
+  }
+
+  .devis-total-sub {
+    font-size: 0.72rem;
+    color: rgba(61,44,46,0.4);
+    margin-top: 2px;
+  }
+
+  .devis-total-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  /* Sidebar */
+  .devis-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .sidebar-block {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--glass-shadow);
+    padding: 24px;
+  }
+
+  .sidebar-block-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--deep-brown);
+    margin-bottom: 14px;
+  }
+
+  .search-input {
+    width: 100%;
+    background: rgba(255,255,255,0.80);
+    border: 1.5px solid rgba(212,163,115,0.25);
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    color: var(--deep-brown);
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(61,44,46,0.04);
+  }
+
+  .search-input:focus {
+    border-color: var(--clay);
+  }
+
+  .company-preview {
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+
+  .company-preview .name {
+    font-weight: 700;
+    color: var(--deep-brown);
+  }
+
+  .company-preview .detail {
+    color: rgba(61,44,46,0.5);
+  }
+
+  .opco-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--clay), var(--terracotta));
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    margin-top: 8px;
+  }
+
+  .recap-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    padding: 6px 0;
+  }
+
+  .recap-line .label {
+    color: rgba(61,44,46,0.45);
+  }
+
+  .recap-line .value {
+    font-weight: 700;
+    color: var(--deep-brown);
+  }
+
+  .recap-divider {
+    border: none;
+    height: 1px;
+    background: rgba(212,163,115,0.15);
+    margin: 6px 0;
+  }
+
+  /* ========== SECTION 4: CONFIRMATION ========== */
+  .confirm-center {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .checkmark-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--sage);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 32px;
+    box-shadow: 0 0 40px rgba(124,144,112,0.25), 0 0 80px rgba(124,144,112,0.10);
+  }
+
+  .checkmark-circle svg {
+    width: 44px;
+    height: 44px;
+    stroke: #fff;
+    stroke-width: 3;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .confirm-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--deep-brown);
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .confirm-subtitle {
+    font-size: 0.92rem;
+    color: rgba(61,44,46,0.55);
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+
+  .ref-number {
+    font-family: 'Courier New', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 16px 36px;
+    display: inline-block;
+    margin-bottom: 40px;
+    letter-spacing: 0.1em;
+    color: var(--clay);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .recap-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    text-align: left;
+  }
+
+  .recap-card-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(212,163,115,0.15);
+    color: var(--deep-brown);
+  }
+
+  .recap-card-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(212,163,115,0.08);
+    font-size: 0.85rem;
+    align-items: center;
+  }
+
+  .recap-card-row:last-child {
+    border-bottom: none;
+  }
+
+  .recap-card-row .module-name {
+    font-weight: 600;
+    color: var(--deep-brown);
+    font-size: 0.85rem;
+  }
+
+  .recap-card-row .track-name-sm {
+    font-size: 0.72rem;
+    color: rgba(61,44,46,0.4);
+  }
+
+  .recap-card-row .price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    text-align: right;
+    color: var(--deep-brown);
+  }
+
+  .recap-card-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-top: 2px solid rgba(212,163,115,0.2);
+    background: rgba(255,255,255,0.3);
+  }
+
+  .recap-card-total .total-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-brown);
+  }
+
+  .recap-card-total .total-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .confirm-actions {
+    margin-top: 36px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+  }
+
+  /* Funding block */
+  .funding-block {
+    border-color: var(--sage);
+    background: rgba(124,144,112,0.04);
+  }
+
+  .funding-block .funding-small {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(61,44,46,0.45);
+    margin-bottom: 6px;
+  }
+
+  .funding-block .funding-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--sage);
+    line-height: 1.4;
+  }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    padding: 24px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(61,44,46,0.25);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .section-wrapper { padding: 48px 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .tracks-grid { grid-template-columns: 1fr; }
+    .modules-grid { grid-template-columns: 1fr; }
+    .devis-layout { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr; }
+    .radio-group { flex-direction: column; }
+    .cart-bar { flex-direction: column; gap: 16px; text-align: center; }
+    .cart-bar-left { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FIXED DESIGN BANNER -->
+<div class="design-banner">
+  PROPOSITION DESIGN #6 — GLASS CLAY
+  <span>HTML/CSS Mockup &middot; Scroll pour voir les 4 etapes</span>
+</div>
+
+<div class="page">
+
+<!-- ========================================================= -->
+<!-- SECTION 1 — HERO + CONTACT FORM                           -->
+<!-- ========================================================= -->
+<div class="section-wrapper">
+  <div class="section">
+    <div class="step-label">ETAPE 01 / 04</div>
+    <h1 class="section-title">
+      Configurez votre<br>
+      formation <span class="highlight">sur mesure</span>
+    </h1>
+
+    <div style="
+      display: inline-block;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 999px;
+      padding: 8px 22px;
+      margin-bottom: 36px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--clay);
+      letter-spacing: 0.08em;
+    ">Salon des Batisseurs 2026</div>
+
+    <div class="glass-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Prenom</label>
+          <input type="text" class="form-input" placeholder="Jean" value="Jean">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-input" placeholder="Dupont" value="Dupont">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input active" placeholder="jean.dupont@entreprise.fr" value="jean.dupont@btp-solutions.fr">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telephone</label>
+          <input type="tel" class="form-input" placeholder="06 12 34 56 78" value="06 45 78 12 90">
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Votre situation</label>
+          <div class="radio-group">
+            <div class="radio-option selected">Salarie</div>
+            <div class="radio-option">Demandeur d'emploi</div>
+            <div class="radio-option">Independant</div>
+            <div class="radio-option">Chef d'entreprise</div>
+            <div class="radio-option">Autre</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: right;">
+        <div class="btn-primary">Continuer &rarr;</div>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-badge"><span class="icon">&#10003;</span> Certifie Qualiopi</div>
+      <div class="trust-badge"><span class="icon">&#9733;</span> Eligible CPF &amp; OPCO</div>
+      <div class="trust-badge"><span class="icon">&#128274;</span> Donnees securisees</div>
+      <div class="trust-badge"><span class="icon">&#9830;</span> Satisfaction 4.8/5</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value">-35%</div>
+        <div class="stat-label">Reduction Salon</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Parcours disponibles</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">24</div>
+        <div class="stat-label">Modules de formation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 0 40px;"><hr class="section-divider"></div>
+
+<!-- ========================================================= -->
+<!-- SECTION 2 — MODULE SELECTION                               -->
+<!-- ========================================================= -->
+<div class="section-wrapper">
+  <div class="section">
+    <div class="step-label">ETAPE 02 / 04</div>
+    <h2 class="section-title">
+      Choisissez vos<br>
+      <span class="highlight">modules</span>
+    </h2>
+
+    <div class="promo-banner">
+      <span>Offre speciale Salon des Batisseurs — Reduction de 35% sur tous les modules</span>
+      <span class="promo-tag">-35%</span>
+    </div>
+
+    <div class="tracks-grid">
+      <!-- Track 1 -->
+      <div class="track-card">
+        <div class="track-number">01</div>
+        <div class="track-tag">PARCOURS</div>
+        <div class="track-name">Gestion de Chantier</div>
+        <div class="track-desc">
+          Pilotage, planification et suivi de chantier. Maitrisez les outils et methodes essentiels.
+        </div>
+        <div class="track-meta">
+          <span>8 MODULES</span>
+          <span class="track-price">2 400 &euro;</span>
+        </div>
+      </div>
+
+      <!-- Track 2 — ACTIVE -->
+      <div class="track-card active">
+        <div class="track-number">02</div>
+        <div class="track-tag popular">POPULAIRE</div>
+        <div class="track-name">Transition Energetique</div>
+        <div class="track-desc">
+          RE2020, renovation energetique, audit et certification. Le parcours le plus demande.
+        </div>
+        <div class="track-meta">
+          <span>10 MODULES</span>
+          <span class="track-price">3 200 &euro;</span>
+        </div>
+      </div>
+
+      <!-- Track 3 -->
+      <div class="track-card">
+        <div class="track-number">03</div>
+        <div class="track-tag">PARCOURS</div>
+        <div class="track-name">Securite &amp; Conformite</div>
+        <div class="track-desc">
+          Reglementation, prevention des risques, coordination SPS et habilitations.
+        </div>
+        <div class="track-meta">
+          <span>6 MODULES</span>
+          <span class="track-price">1 800 &euro;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expanded modules panel -->
+    <div class="modules-panel">
+      <div class="modules-panel-title">
+        Modules — Transition Energetique
+        <span class="count">10 modules</span>
+      </div>
+
+      <div class="modules-grid">
+        <div class="module-row">
+          <div>
+            <div class="module-name">RE2020 : Fondamentaux et application</div>
+            <div class="module-duration">14h &middot; 2 jours</div>
+          </div>
+          <div class="module-toggle added">&#10003;</div>
+        </div>
+        <div class="module-row">
+          <div>
+            <div class="module-name">Audit energetique en renovation</div>
+            <div class="module-duration">21h &middot; 3 jours</div>
+          </div>
+          <div class="module-toggle added">&#10003;</div>
+        </div>
+        <div class="module-row">
+          <div>
+            <div class="module-name">Isolation thermique par l'exterieur (ITE)</div>
+            <div class="module-duration">14h &middot; 2 jours</div>
+          </div>
+          <div class="module-toggle">+</div>
+        </div>
+        <div class="module-row">
+          <div>
+            <div class="module-name">Pompes a chaleur : dimensionnement</div>
+            <div class="module-duration">7h &middot; 1 jour</div>
+          </div>
+          <div class="module-toggle">+</div>
+        </div>
+        <div class="module-row">
+          <div>
+            <div class="module-name">Etancheite a l'air des batiments</div>
+            <div class="module-duration">14h &middot; 2 jours</div>
+          </div>
+          <div class="module-toggle added">&#10003;</div>
+        </div>
+        <div class="module-row">
+          <div>
+            <div class="module-name">Ventilation et qualite de l'air</div>
+            <div class="module-duration">7h &middot; 1 jour</div>
+          </div>
+          <div class="module-toggle">+</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart bar -->
+    <div class="cart-bar">
+      <div class="cart-bar-left">
+        <div class="cart-count">3 modules selectionnes</div>
+        <div class="cart-divider"></div>
+        <div class="cart-total">1 560 &euro;</div>
+        <div class="cart-discount">tarif salon -35%</div>
+      </div>
+      <div class="btn-primary">Valider la selection &rarr;</div>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 0 40px;"><hr class="section-divider"></div>
+
+<!-- ========================================================= -->
+<!-- SECTION 3 — DEVIS / QUOTE                                  -->
+<!-- ========================================================= -->
+<div class="section-wrapper">
+  <div class="section">
+    <div class="step-label">ETAPE 03 / 04</div>
+    <h2 class="section-title">
+      Votre<br>
+      <span class="highlight">devis</span>
+    </h2>
+
+    <div class="devis-layout">
+      <div>
+        <!-- Table -->
+        <div class="devis-table">
+          <div class="devis-row header">
+            <div>Module</div>
+            <div>Duree</div>
+            <div style="text-align:right;">Prix</div>
+          </div>
+          <div class="devis-row">
+            <div>
+              <div class="module-name-cell">RE2020 : Fondamentaux et application</div>
+              <div class="track-label">Transition Energetique</div>
+            </div>
+            <div style="font-size:0.8rem; color: rgba(61,44,46,0.4);">14h</div>
+            <div class="price-cell">780 &euro;</div>
+          </div>
+          <div class="devis-row">
+            <div>
+              <div class="module-name-cell">Audit energetique en renovation</div>
+              <div class="track-label">Transition Energetique</div>
+            </div>
+            <div style="font-size:0.8rem; color: rgba(61,44,46,0.4);">21h</div>
+            <div class="price-cell">1 170 &euro;</div>
+          </div>
+          <div class="devis-row">
+            <div>
+              <div class="module-name-cell">Etancheite a l'air des batiments</div>
+              <div class="track-label">Transition Energetique</div>
+            </div>
+            <div style="font-size:0.8rem; color: rgba(61,44,46,0.4);">14h</div>
+            <div class="price-cell">780 &euro;</div>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="devis-total-row">
+          <div>
+            <div class="devis-total-label">Total TTC</div>
+            <div class="devis-total-sub">Reduction salon incluse (-35%)</div>
+          </div>
+          <div class="devis-total-value">1 560 &euro;</div>
+        </div>
+
+        <div style="margin-top: 28px;">
+          <div class="btn-primary large">Soumettre ma demande de devis</div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="devis-sidebar">
+        <div class="sidebar-block">
+          <div class="sidebar-block-title">Entreprise</div>
+          <input type="text" class="search-input" placeholder="Rechercher par SIRET ou nom..." value="BTP Solutions">
+          <div class="company-preview">
+            <div class="name">BTP SOLUTIONS SAS</div>
+            <div class="detail">SIRET : 812 345 678 00012</div>
+            <div class="detail">15 rue de la Construction, 75012 Paris</div>
+            <div class="detail">NAF : 4120A — Construction de maisons</div>
+            <div class="opco-tag">OPCO CONSTRUCTYS</div>
+          </div>
+        </div>
+
+        <div class="sidebar-block">
+          <div class="sidebar-block-title">Recapitulatif</div>
+          <div class="recap-line">
+            <span class="label">Modules</span>
+            <span class="value">3</span>
+          </div>
+          <div class="recap-line">
+            <span class="label">Heures totales</span>
+            <span class="value">49h</span>
+          </div>
+          <div class="recap-line">
+            <span class="label">Jours</span>
+            <span class="value">7 jours</span>
+          </div>
+          <hr class="recap-divider">
+          <div class="recap-line">
+            <span class="label">Prix catalogue</span>
+            <span class="value" style="text-decoration: line-through; opacity: 0.35;">2 400 &euro;</span>
+          </div>
+          <div class="recap-line">
+            <span class="label">Reduction salon</span>
+            <span class="value" style="color: var(--sage);">-840 &euro;</span>
+          </div>
+        </div>
+
+        <div class="sidebar-block funding-block">
+          <div class="funding-small">Eligible au financement</div>
+          <div class="funding-text">
+            Prise en charge OPCO<br>jusqu'a 100%
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 0 40px;"><hr class="section-divider"></div>
+
+<!-- ========================================================= -->
+<!-- SECTION 4 — CONFIRMATION                                   -->
+<!-- ========================================================= -->
+<div class="section-wrapper">
+  <div class="section">
+    <div class="step-label" style="justify-content: center;">ETAPE 04 / 04</div>
+
+    <div class="confirm-center">
+      <div class="checkmark-circle">
+        <svg viewBox="0 0 40 40">
+          <polyline points="8,22 17,31 33,11" />
+        </svg>
+      </div>
+
+      <h2 class="confirm-title">Demande envoyee</h2>
+      <p class="confirm-subtitle">
+        Votre demande de devis a bien ete enregistree. Vous recevrez une confirmation par email
+        dans les prochaines minutes avec le detail de votre selection.
+      </p>
+
+      <div class="ref-number">REF-SDB26-004718</div>
+
+      <div class="recap-card">
+        <div class="recap-card-header">Recapitulatif de votre demande</div>
+        <div class="recap-card-row">
+          <div>
+            <div class="module-name">RE2020 : Fondamentaux</div>
+            <div class="track-name-sm">Transition Energetique</div>
+          </div>
+          <div style="font-size: 0.78rem; color: rgba(61,44,46,0.4);">14h</div>
+          <div class="price">780 &euro;</div>
+        </div>
+        <div class="recap-card-row">
+          <div>
+            <div class="module-name">Audit energetique</div>
+            <div class="track-name-sm">Transition Energetique</div>
+          </div>
+          <div style="font-size: 0.78rem; color: rgba(61,44,46,0.4);">21h</div>
+          <div class="price">1 170 &euro;</div>
+        </div>
+        <div class="recap-card-row">
+          <div>
+            <div class="module-name">Etancheite a l'air</div>
+            <div class="track-name-sm">Transition Energetique</div>
+          </div>
+          <div style="font-size: 0.78rem; color: rgba(61,44,46,0.4);">14h</div>
+          <div class="price">780 &euro;</div>
+        </div>
+        <div class="recap-card-total">
+          <span class="total-label">Total TTC</span>
+          <span class="total-price">1 560 &euro;</span>
+        </div>
+      </div>
+
+      <div class="confirm-actions">
+        <div class="btn-primary">Telecharger le PDF</div>
+        <div class="btn-secondary">Retour a l'accueil</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  P14 Salon des Batisseurs &middot; Maquette design &middot; 2026
+</div>
+
+</div><!-- .page -->
+
+</body>
+</html>

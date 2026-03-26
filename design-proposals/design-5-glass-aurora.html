@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P14 Salon des Batisseurs — Design #5 Glass Aurora</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --dark: #111827;
+    --dark-card: rgba(255,255,255,0.07);
+    --dark-border: rgba(255,255,255,0.12);
+    --aurora-green: #34D399;
+    --aurora-blue: #60A5FA;
+    --aurora-purple: #A78BFA;
+    --aurora-pink: #F472B6;
+    --white: #ffffff;
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.12);
+    --glass-input-bg: rgba(255,255,255,0.05);
+    --glass-input-border: rgba(255,255,255,0.10);
+    --radius: 24px;
+    --radius-sm: 16px;
+    --radius-xs: 12px;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 400;
+    background-color: var(--dark);
+    color: var(--white);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ========== ANIMATED AURORA BACKGROUND ========== */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      135deg,
+      rgba(52,211,153,0.30) 0%,
+      rgba(96,165,250,0.25) 25%,
+      rgba(167,139,250,0.30) 50%,
+      rgba(244,114,182,0.25) 75%,
+      rgba(52,211,153,0.30) 100%
+    );
+    animation: auroraShift 15s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes auroraShift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-5%, 3%) rotate(1deg); }
+    50% { transform: translate(3%, -5%) rotate(-1deg); }
+    75% { transform: translate(-3%, -2%) rotate(2deg); }
+    100% { transform: translate(5%, 5%) rotate(-1deg); }
+  }
+
+  /* ========== FLOATING AURORA PARTICLES ========== */
+  .aurora-particle {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .aurora-particle:nth-child(1) {
+    width: 300px;
+    height: 300px;
+    background: var(--aurora-green);
+    top: 15%;
+    left: 10%;
+    animation: floatParticle1 20s ease-in-out infinite;
+  }
+
+  .aurora-particle:nth-child(2) {
+    width: 250px;
+    height: 250px;
+    background: var(--aurora-blue);
+    top: 40%;
+    right: 5%;
+    animation: floatParticle2 18s ease-in-out infinite;
+  }
+
+  .aurora-particle:nth-child(3) {
+    width: 200px;
+    height: 200px;
+    background: var(--aurora-purple);
+    bottom: 25%;
+    left: 20%;
+    animation: floatParticle3 22s ease-in-out infinite;
+  }
+
+  .aurora-particle:nth-child(4) {
+    width: 180px;
+    height: 180px;
+    background: var(--aurora-pink);
+    bottom: 10%;
+    right: 15%;
+    animation: floatParticle4 16s ease-in-out infinite;
+  }
+
+  @keyframes floatParticle1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(40px, -60px); }
+  }
+
+  @keyframes floatParticle2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-50px, 40px); }
+  }
+
+  @keyframes floatParticle3 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 50px); }
+  }
+
+  @keyframes floatParticle4 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-40px, -30px); }
+  }
+
+  /* ========== FIXED DESIGN BANNER ========== */
+  .design-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: linear-gradient(90deg, var(--aurora-green), var(--aurora-blue), var(--aurora-purple), var(--aurora-pink), var(--aurora-green));
+    background-size: 300% 100%;
+    animation: bannerGradient 8s linear infinite;
+    color: var(--dark);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    padding: 10px 20px;
+    text-transform: uppercase;
+  }
+
+  .design-banner span {
+    font-weight: 500;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    margin-left: 16px;
+    opacity: 0.7;
+  }
+
+  @keyframes bannerGradient {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  /* ========== LAYOUT ========== */
+  .page {
+    position: relative;
+    z-index: 1;
+    margin-top: 44px;
+  }
+
+  .section {
+    padding: 80px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ========== GRADIENT DIVIDER ========== */
+  .section-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, var(--aurora-green), var(--aurora-blue), var(--aurora-purple), var(--aurora-pink));
+    margin: 0;
+    opacity: 0.6;
+  }
+
+  /* ========== STEP LABEL ========== */
+  .step-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .step-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.15), transparent);
+  }
+
+  /* ========== AURORA GRADIENT TEXT ========== */
+  .aurora-text {
+    background: linear-gradient(135deg, var(--aurora-green), var(--aurora-blue), var(--aurora-purple), var(--aurora-pink));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: auroraText 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes auroraText {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
+  /* ========== HEADINGS ========== */
+  .section-title {
+    font-weight: 800;
+    font-size: 3rem;
+    line-height: 1.1;
+    margin-bottom: 40px;
+    letter-spacing: -0.02em;
+  }
+
+  .section-subtitle {
+    font-weight: 800;
+    font-size: 2.4rem;
+    line-height: 1.1;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+
+  /* ========== GLASS CARD ========== */
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 32px;
+  }
+
+  /* ========== FORMS ========== */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .form-input {
+    background: var(--glass-input-bg);
+    border: 1px solid var(--glass-input-border);
+    border-radius: var(--radius-xs);
+    padding: 14px 16px;
+    color: var(--white);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .form-input::placeholder {
+    color: rgba(255,255,255,0.25);
+  }
+
+  .form-input:focus,
+  .form-input.active {
+    border-color: var(--aurora-green);
+    box-shadow: 0 0 20px rgba(52,211,153,0.15);
+  }
+
+  /* ========== RADIO / PILL OPTIONS ========== */
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .radio-option {
+    padding: 10px 20px;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-input-bg);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .radio-option:hover {
+    border-color: rgba(167,139,250,0.4);
+  }
+
+  .radio-option.selected {
+    background: rgba(167,139,250,0.2);
+    border-color: var(--aurora-purple);
+    box-shadow: 0 0 20px rgba(167,139,250,0.2), 0 0 40px rgba(167,139,250,0.1);
+    color: var(--white);
+  }
+
+  /* ========== BUTTONS ========== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: var(--radius-xs);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    border: none;
+    color: var(--white);
+    background: var(--glass-input-bg);
+    overflow: hidden;
+  }
+
+  /* Animated gradient border button */
+  .btn-aurora {
+    background: var(--glass-bg);
+    border: 2px solid transparent;
+    background-image: linear-gradient(var(--dark), var(--dark)), linear-gradient(90deg, var(--aurora-green), var(--aurora-blue), var(--aurora-purple), var(--aurora-pink), var(--aurora-green));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    background-size: 100% 100%, 300% 100%;
+    animation: borderGradient 4s linear infinite;
+  }
+
+  .btn-aurora:hover {
+    background-image: linear-gradient(90deg, rgba(52,211,153,0.2), rgba(96,165,250,0.2), rgba(167,139,250,0.2), rgba(244,114,182,0.2)), linear-gradient(90deg, var(--aurora-green), var(--aurora-blue), var(--aurora-purple), var(--aurora-pink), var(--aurora-green));
+    box-shadow: 0 0 30px rgba(52,211,153,0.15), 0 0 60px rgba(96,165,250,0.1), 0 0 90px rgba(167,139,250,0.05);
+  }
+
+  @keyframes borderGradient {
+    0% { background-position: 0% 50%, 0% 50%; }
+    100% { background-position: 0% 50%, 300% 50%; }
+  }
+
+  .btn-large {
+    padding: 18px 48px;
+    font-size: 1rem;
+    font-weight: 800;
+    border-radius: var(--radius-sm);
+  }
+
+  .btn-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xs);
+  }
+
+  .btn-glass:hover {
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 0 20px rgba(52,211,153,0.1), 0 0 40px rgba(96,165,250,0.05);
+  }
+
+  /* ========== TRUST BADGES ========== */
+  .trust-badges {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 100px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .trust-badge .badge-icon {
+    font-size: 1rem;
+  }
+
+  /* ========== STATS ROW ========== */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .stat-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+
+  .stat-card:nth-child(1)::before { background: var(--aurora-green); }
+  .stat-card:nth-child(2)::before { background: var(--aurora-blue); }
+  .stat-card:nth-child(3)::before { background: var(--aurora-purple); }
+
+  .stat-value {
+    font-weight: 800;
+    font-size: 2.8rem;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* ========== SECTION 2: PROMO BAR ========== */
+  .promo-bar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 16px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .promo-bar .promo-discount {
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+
+  /* ========== TRACK CARDS ========== */
+  .tracks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .track-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .track-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .track-card:nth-child(1)::before { background: var(--aurora-green); }
+  .track-card:nth-child(2)::before { background: var(--aurora-blue); }
+  .track-card:nth-child(3)::before { background: var(--aurora-purple); }
+
+  .track-card:hover {
+    box-shadow: 0 8px 40px rgba(52,211,153,0.08), 0 8px 40px rgba(96,165,250,0.08), 0 8px 40px rgba(167,139,250,0.08);
+  }
+
+  .track-card.active {
+    border-color: var(--aurora-blue);
+    box-shadow: 0 0 30px rgba(96,165,250,0.15), 0 0 60px rgba(96,165,250,0.08);
+    animation: selectedPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes selectedPulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(96,165,250,0.15), 0 0 60px rgba(96,165,250,0.08); }
+    50% { box-shadow: 0 0 40px rgba(96,165,250,0.25), 0 0 80px rgba(167,139,250,0.12); }
+  }
+
+  .track-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-input-bg);
+    width: fit-content;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .track-tag.highlight {
+    border-color: var(--aurora-blue);
+    background: rgba(96,165,250,0.15);
+    color: var(--aurora-blue);
+  }
+
+  .track-name {
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .track-desc {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .track-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--glass-border);
+    color: rgba(255,255,255,0.5);
+  }
+
+  .track-price {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--white);
+  }
+
+  /* ========== MODULES PANEL ========== */
+  .modules-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 32px;
+  }
+
+  .modules-panel-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .modules-panel-title .count {
+    background: rgba(96,165,250,0.15);
+    color: var(--aurora-blue);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+  }
+
+  .module-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.85rem;
+  }
+
+  .module-row:last-child {
+    border-bottom: none;
+  }
+
+  .module-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .module-name {
+    font-weight: 600;
+  }
+
+  .module-duration {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.05em;
+  }
+
+  .module-check {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .module-check.added {
+    background: rgba(52,211,153,0.15);
+    border: 1px solid rgba(52,211,153,0.3);
+    color: var(--aurora-green);
+  }
+
+  .module-check.not-added {
+    background: var(--glass-input-bg);
+    border: 1px solid var(--glass-border);
+    color: rgba(255,255,255,0.3);
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: rgba(167,139,250,0.1);
+    border: 1px solid rgba(167,139,250,0.25);
+    color: var(--aurora-purple);
+    transition: all 0.2s;
+  }
+
+  .qty-value {
+    font-weight: 800;
+    font-size: 0.9rem;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  /* ========== CART FOOTER ========== */
+  .cart-footer {
+    margin-top: 32px;
+    border-top: 1px solid transparent;
+    background-image: linear-gradient(var(--dark), var(--dark)), linear-gradient(90deg, var(--aurora-green), var(--aurora-blue), var(--aurora-purple), var(--aurora-pink));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border-radius: var(--radius-sm);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid transparent;
+  }
+
+  .cart-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .cart-count {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--aurora-green);
+  }
+
+  .cart-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .cart-total {
+    font-weight: 800;
+    font-size: 1.6rem;
+  }
+
+  .cart-discount {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== SECTION 3: DEVIS ========== */
+  .devis-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 32px;
+  }
+
+  .devis-table {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .devis-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
+    padding: 16px 24px;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .devis-row + .devis-row {
+    border-top: 1px solid;
+    border-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent) 1;
+  }
+
+  .devis-row.header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .devis-row .module-name-cell {
+    font-weight: 600;
+  }
+
+  .devis-row .track-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.05em;
+  }
+
+  .devis-row .price-cell {
+    font-weight: 800;
+    font-size: 1rem;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .devis-row .duration-cell {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .devis-total {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .devis-total-label {
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .devis-total-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+  }
+
+  .devis-total-value {
+    font-weight: 800;
+    font-size: 2.6rem;
+    line-height: 1;
+  }
+
+  .discount-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(244,114,182,0.12);
+    border: 1px solid rgba(244,114,182,0.25);
+    color: var(--aurora-pink);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== SIDEBAR ========== */
+  .devis-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sidebar-block {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+  }
+
+  .sidebar-block-title {
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .company-preview {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xs);
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+
+  .company-preview .name {
+    font-weight: 800;
+    color: var(--white);
+  }
+
+  .company-preview .detail {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.75rem;
+  }
+
+  .opco-tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: rgba(52,211,153,0.12);
+    border: 1px solid rgba(52,211,153,0.25);
+    color: var(--aurora-green);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .recap-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.82rem;
+  }
+
+  .recap-line .label {
+    color: rgba(255,255,255,0.4);
+  }
+
+  .recap-line .value {
+    font-weight: 700;
+  }
+
+  .recap-sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+    margin: 8px 0;
+  }
+
+  .funding-block {
+    border-color: rgba(52,211,153,0.25) !important;
+    background: rgba(52,211,153,0.05) !important;
+  }
+
+  /* ========== SECTION 4: CONFIRMATION ========== */
+  .confirm-center {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .checkmark-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--aurora-green), var(--aurora-blue), var(--aurora-purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 32px;
+    animation: checkmarkPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes checkmarkPulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(52,211,153,0.3), 0 0 60px rgba(96,165,250,0.15); }
+    50% { box-shadow: 0 0 50px rgba(52,211,153,0.4), 0 0 100px rgba(96,165,250,0.25), 0 0 140px rgba(167,139,250,0.15); }
+  }
+
+  .checkmark-circle svg {
+    width: 44px;
+    height: 44px;
+    fill: none;
+    stroke: white;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .confirm-title {
+    font-weight: 800;
+    font-size: 2.4rem;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .confirm-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.55);
+    max-width: 520px;
+    margin: 0 auto 24px;
+  }
+
+  .ref-number {
+    font-weight: 800;
+    font-size: 1.3rem;
+    margin-bottom: 40px;
+    letter-spacing: 0.05em;
+  }
+
+  .recap-table-glass {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .recap-table-glass th {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .recap-table-glass td {
+    padding: 14px 20px;
+    font-size: 0.85rem;
+  }
+
+  .recap-table-glass tr + tr td {
+    border-top: 1px solid;
+    border-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent) 1;
+  }
+
+  .recap-table-glass .track-col {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.8rem;
+  }
+
+  .recap-table-glass .price-col {
+    text-align: right;
+    font-weight: 700;
+  }
+
+  .recap-table-glass .total-row td {
+    border-top: 1px solid var(--glass-border) !important;
+    border-image: none !important;
+    font-weight: 800;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .confirm-actions {
+    margin-top: 40px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  /* ========== FOOTER ========== */
+  .page-footer {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .page-footer span {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .section { padding: 48px 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .tracks-grid { grid-template-columns: 1fr; }
+    .modules-grid { grid-template-columns: 1fr; }
+    .devis-layout { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr; }
+    .radio-group { flex-direction: column; }
+    .confirm-actions { flex-direction: column; align-items: center; }
+    .section-title { font-size: 2.2rem; }
+    .section-subtitle { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating aurora particles -->
+<div class="aurora-particle"></div>
+<div class="aurora-particle"></div>
+<div class="aurora-particle"></div>
+<div class="aurora-particle"></div>
+
+<!-- FIXED DESIGN BANNER -->
+<div class="design-banner">
+  PROPOSITION DESIGN #5 — GLASS AURORA
+  <span>HTML/CSS Mockup &middot; Scroll pour voir les 4 etapes</span>
+</div>
+
+<div class="page">
+
+<!-- ========================================================= -->
+<!-- SECTION 1 — HERO + CONTACT FORM                           -->
+<!-- ========================================================= -->
+<div class="section">
+  <div class="step-label">ETAPE 01 / 04</div>
+  <h1 class="section-title">
+    <span class="aurora-text">Configurez votre<br>formation sur mesure</span>
+  </h1>
+
+  <div style="display:inline-block; padding: 8px 20px; border-radius: 100px; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 40px; letter-spacing: 0.05em;">
+    Salon des Batisseurs 2026
+  </div>
+
+  <div class="glass-card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Prenom</label>
+        <input type="text" class="form-input" placeholder="Jean" value="Jean">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nom</label>
+        <input type="text" class="form-input" placeholder="Dupont" value="Dupont">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input active" placeholder="jean.dupont@entreprise.fr" value="jean.dupont@btp-solutions.fr">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Telephone</label>
+        <input type="tel" class="form-input" placeholder="06 12 34 56 78" value="06 45 78 12 90">
+      </div>
+      <div class="form-group full-width">
+        <label class="form-label">Votre situation</label>
+        <div class="radio-group">
+          <div class="radio-option selected">Salarie</div>
+          <div class="radio-option">Demandeur d'emploi</div>
+          <div class="radio-option">Independant</div>
+          <div class="radio-option">Chef d'entreprise</div>
+          <div class="radio-option">Autre</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: right; margin-top: 20px;">
+      <div class="btn btn-aurora">Continuer &rarr;</div>
+    </div>
+  </div>
+
+  <div class="trust-badges">
+    <div class="trust-badge">
+      <span class="badge-icon" style="color: var(--aurora-green);">&#9745;</span>
+      Certifie Qualiopi
+    </div>
+    <div class="trust-badge">
+      <span class="badge-icon" style="color: var(--aurora-blue);">&#9733;</span>
+      +2 500 professionnels formes
+    </div>
+    <div class="trust-badge">
+      <span class="badge-icon" style="color: var(--aurora-purple);">&#128274;</span>
+      Donnees securisees
+    </div>
+    <div class="trust-badge">
+      <span class="badge-icon" style="color: var(--aurora-pink);">&#9825;</span>
+      Satisfaction 4.8/5
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value aurora-text">-35%</div>
+      <div class="stat-label">Reduction Salon</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color: var(--aurora-blue);">3</div>
+      <div class="stat-label">Parcours disponibles</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color: var(--aurora-purple);">24</div>
+      <div class="stat-label">Modules de formation</div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ========================================================= -->
+<!-- SECTION 2 — MODULE SELECTION                               -->
+<!-- ========================================================= -->
+<div class="section">
+  <div class="step-label">ETAPE 02 / 04</div>
+  <h2 class="section-subtitle">
+    Choisissez vos <span class="aurora-text">modules</span>
+  </h2>
+
+  <!-- Promo bar -->
+  <div class="promo-bar">
+    <span class="discount-badge">-35%</span>
+    <span>Tarif exceptionnel <span class="aurora-text promo-discount">Salon des Batisseurs</span> sur toutes les formations</span>
+  </div>
+
+  <!-- Track cards -->
+  <div class="tracks-grid">
+    <div class="track-card">
+      <div class="track-tag">PARCOURS</div>
+      <div class="track-name">Gestion de Chantier</div>
+      <div class="track-desc">
+        Pilotage, planification et suivi de chantier. Maitrisez les outils et methodes essentiels.
+      </div>
+      <div class="track-meta">
+        <span>8 MODULES</span>
+        <span class="track-price">2 400 &euro;</span>
+      </div>
+    </div>
+
+    <div class="track-card active">
+      <div class="track-tag highlight">POPULAIRE</div>
+      <div class="track-name">Transition Energetique</div>
+      <div class="track-desc">
+        RE2020, renovation energetique, audit et certification. Le parcours le plus demande.
+      </div>
+      <div class="track-meta">
+        <span>10 MODULES</span>
+        <span class="track-price">3 200 &euro;</span>
+      </div>
+    </div>
+
+    <div class="track-card">
+      <div class="track-tag">PARCOURS</div>
+      <div class="track-name">Securite &amp; Conformite</div>
+      <div class="track-desc">
+        Reglementation, prevention des risques, coordination SPS et habilitations.
+      </div>
+      <div class="track-meta">
+        <span>6 MODULES</span>
+        <span class="track-price">1 800 &euro;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modules panel -->
+  <div class="modules-panel">
+    <div class="modules-panel-title">
+      Modules — Transition Energetique
+      <span class="count">10 modules</span>
+    </div>
+
+    <div class="modules-grid">
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name">RE2020 : Fondamentaux et application</div>
+          <div class="module-duration">14h &middot; 2 jours</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="qty-control">
+            <div class="qty-btn">&minus;</div>
+            <div class="qty-value">1</div>
+            <div class="qty-btn">+</div>
+          </div>
+          <div class="module-check added">&#10003;</div>
+        </div>
+      </div>
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name">Audit energetique en renovation</div>
+          <div class="module-duration">21h &middot; 3 jours</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="qty-control">
+            <div class="qty-btn">&minus;</div>
+            <div class="qty-value">1</div>
+            <div class="qty-btn">+</div>
+          </div>
+          <div class="module-check added">&#10003;</div>
+        </div>
+      </div>
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name">Isolation thermique par l'exterieur</div>
+          <div class="module-duration">14h &middot; 2 jours</div>
+        </div>
+        <div class="module-check not-added">+</div>
+      </div>
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name">Pompes a chaleur : dimensionnement</div>
+          <div class="module-duration">7h &middot; 1 jour</div>
+        </div>
+        <div class="module-check not-added">+</div>
+      </div>
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name">Etancheite a l'air des batiments</div>
+          <div class="module-duration">14h &middot; 2 jours</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="qty-control">
+            <div class="qty-btn">&minus;</div>
+            <div class="qty-value">1</div>
+            <div class="qty-btn">+</div>
+          </div>
+          <div class="module-check added">&#10003;</div>
+        </div>
+      </div>
+      <div class="module-row">
+        <div class="module-info">
+          <div class="module-name">Ventilation et qualite de l'air</div>
+          <div class="module-duration">7h &middot; 1 jour</div>
+        </div>
+        <div class="module-check not-added">+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart footer -->
+  <div class="cart-footer">
+    <div class="cart-footer-left">
+      <div class="cart-count">3 modules</div>
+      <div class="cart-divider"></div>
+      <div>
+        <div class="cart-total aurora-text">1 560 &euro;</div>
+        <div class="cart-discount">tarif salon -35%</div>
+      </div>
+    </div>
+    <div class="btn btn-aurora">Valider la selection &rarr;</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ========================================================= -->
+<!-- SECTION 3 — DEVIS / QUOTE                                  -->
+<!-- ========================================================= -->
+<div class="section">
+  <div class="step-label">ETAPE 03 / 04</div>
+  <h2 class="section-subtitle">
+    Votre <span class="aurora-text">devis</span>
+  </h2>
+
+  <div class="devis-layout">
+    <div>
+      <!-- Table -->
+      <div class="devis-table">
+        <div class="devis-row header">
+          <div>Module</div>
+          <div>Duree</div>
+          <div style="text-align:right;">Prix</div>
+        </div>
+        <div class="devis-row">
+          <div>
+            <div class="module-name-cell">RE2020 : Fondamentaux et application</div>
+            <div class="track-label">Transition Energetique</div>
+          </div>
+          <div class="duration-cell">14h</div>
+          <div class="price-cell">780 &euro;</div>
+        </div>
+        <div class="devis-row">
+          <div>
+            <div class="module-name-cell">Audit energetique en renovation</div>
+            <div class="track-label">Transition Energetique</div>
+          </div>
+          <div class="duration-cell">21h</div>
+          <div class="price-cell">1 170 &euro;</div>
+        </div>
+        <div class="devis-row">
+          <div>
+            <div class="module-name-cell">Etancheite a l'air des batiments</div>
+            <div class="track-label">Transition Energetique</div>
+          </div>
+          <div class="duration-cell">14h</div>
+          <div class="price-cell">780 &euro;</div>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="devis-total">
+        <div>
+          <div class="devis-total-label">TOTAL TTC</div>
+          <div class="devis-total-sub">Reduction salon incluse (-35%)</div>
+        </div>
+        <div>
+          <div class="devis-total-value aurora-text">1 560 &euro;</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 8px; text-align: right;">
+        <span class="discount-badge">Economie de 840 &euro; avec le tarif salon</span>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div class="btn btn-aurora btn-large" style="width: 100;">SOUMETTRE MA DEMANDE DE DEVIS</div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="devis-sidebar">
+      <div class="sidebar-block">
+        <div class="sidebar-block-title">Entreprise</div>
+        <input type="text" class="form-input" style="width:100%; font-size:0.82rem;" placeholder="Rechercher par SIRET ou nom..." value="BTP Solutions">
+        <div class="company-preview">
+          <div class="name">BTP SOLUTIONS SAS</div>
+          <div class="detail">SIRET : 812 345 678 00012</div>
+          <div class="detail">15 rue de la Construction, 75012 Paris</div>
+          <div class="detail">NAF : 4120A — Construction de maisons</div>
+          <div class="opco-tag">OPCO CONSTRUCTYS</div>
+        </div>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-block-title">Recapitulatif</div>
+        <div class="recap-line">
+          <span class="label">Modules</span>
+          <span class="value">3</span>
+        </div>
+        <div class="recap-line">
+          <span class="label">Heures totales</span>
+          <span class="value">49h</span>
+        </div>
+        <div class="recap-line">
+          <span class="label">Jours</span>
+          <span class="value">7 jours</span>
+        </div>
+        <div class="recap-sep"></div>
+        <div class="recap-line">
+          <span class="label">Prix catalogue</span>
+          <span class="value" style="text-decoration: line-through; opacity: 0.3;">2 400 &euro;</span>
+        </div>
+        <div class="recap-line">
+          <span class="label">Reduction salon</span>
+          <span class="value" style="color: var(--aurora-pink);">-840 &euro;</span>
+        </div>
+      </div>
+
+      <div class="sidebar-block funding-block">
+        <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.45); margin-bottom: 4px;">Eligible au financement</div>
+        <div style="font-weight: 800; font-size: 1.1rem; line-height: 1.4;">
+          <span style="color: var(--aurora-green);">Prise en charge OPCO</span><br>
+          jusqu'a 100%
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ========================================================= -->
+<!-- SECTION 4 — CONFIRMATION                                   -->
+<!-- ========================================================= -->
+<div class="section">
+  <div class="step-label" style="justify-content: center;">ETAPE 04 / 04</div>
+
+  <div class="confirm-center">
+    <div class="checkmark-circle">
+      <svg viewBox="0 0 40 40">
+        <polyline points="8,22 17,31 33,11" />
+      </svg>
+    </div>
+
+    <h2 class="confirm-title">Demande envoyee</h2>
+    <p class="confirm-subtitle">
+      Votre demande de devis a bien ete enregistree. Vous recevrez une confirmation par email
+      dans les prochaines minutes avec le detail de votre selection.
+    </p>
+
+    <div class="ref-number aurora-text">REF-SDB26-004718</div>
+
+    <table class="recap-table-glass">
+      <thead>
+        <tr>
+          <th style="text-align:left;">Module</th>
+          <th style="text-align:left;">Parcours</th>
+          <th style="text-align:right;">Prix</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RE2020 : Fondamentaux</td>
+          <td class="track-col">Transition Energetique</td>
+          <td class="price-col">780 &euro;</td>
+        </tr>
+        <tr>
+          <td>Audit energetique</td>
+          <td class="track-col">Transition Energetique</td>
+          <td class="price-col">1 170 &euro;</td>
+        </tr>
+        <tr>
+          <td>Etancheite a l'air</td>
+          <td class="track-col">Transition Energetique</td>
+          <td class="price-col">780 &euro;</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="2" style="font-weight: 800; letter-spacing: 0.05em;">TOTAL TTC</td>
+          <td class="price-col" style="font-size: 1.2rem;"><span class="aurora-text">1 560 &euro;</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="confirm-actions">
+      <div class="btn btn-aurora">Telecharger le PDF</div>
+      <div class="btn btn-glass">Retour a l'accueil</div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="page-footer">
+  <span>P14 Salon des Batisseurs &middot; Maquette design &middot; 2026</span>
+</div>
+
+</div><!-- .page -->
+
+</body>
+</html>

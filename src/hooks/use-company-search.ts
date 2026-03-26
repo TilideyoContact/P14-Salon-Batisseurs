@@ -25,7 +25,7 @@ export function useCompanySearch(query: string) {
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch(`https://recherche-entreprises.api.gouv.fr/search?q=${encodeURIComponent(query)}&per_page=5`);
+        const res = await fetch(`https://recherche-entreprises.api.gouv.fr/search?q=${encodeURIComponent(query)}&per_page=5&departement=971,972,973`);
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
         setResults(data.results || []);

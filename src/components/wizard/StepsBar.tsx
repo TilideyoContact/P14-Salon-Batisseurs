@@ -10,13 +10,11 @@ const STEPS = [
 ];
 
 export function StepsBar() {
-  const { step, setStep, contact } = useWizard();
+  const { step, setStep } = useWizard();
 
   const isStepAccessible = (targetStep: number) => {
-    if (targetStep === 1) return true;
-    if (targetStep === 2) return contact.prenom.length >= 2 && contact.tel.length >= 6;
-    if (targetStep === 3) return step >= 2; // Can go back to 3 from 4, or forward if on 2
-    if (targetStep === 4) return step === 4; // Only visible when done
+    if (targetStep <= step) return true;   // can always go back
+    if (targetStep === step + 1) return true; // can go one step forward (form validates on its own)
     return false;
   };
 
