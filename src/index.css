@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'Archivo Black', sans-serif;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  
+  --color-border: hsl(var(--border));
+  --color-ring: hsl(var(--ring));
+
+  --color-navy: hsl(var(--navy));
+  --color-turq: hsl(var(--turq));
+  --color-teal: hsl(var(--teal));
+  --color-magenta: hsl(var(--magenta));
+  --color-violet: hsl(var(--violet));
+}
+
+:root {
+  --background: 45 14% 96%; /* #f7f6f3 */
+  --foreground: 208 57% 18%; /* navy #14314a */
+
+  --card: 0 0% 100%;
+  --card-foreground: 208 57% 18%;
+
+  --primary: 339 74% 45%; /* magenta #c61e5a */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 188 87% 30%; /* teal #0a7d8f */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 45 10% 90%;
+  --muted-foreground: 208 20% 50%;
+
+  --border: 208 20% 85%;
+  --ring: 339 74% 45%;
+
+  /* Brand Colors */
+  --navy: 208 57% 18%;
+  --turq: 180 100% 35%;
+  --teal: 188 87% 30%;
+  --magenta: 339 74% 45%;
+  --violet: 288 52% 37%;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
